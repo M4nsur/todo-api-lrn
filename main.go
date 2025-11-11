@@ -2,26 +2,28 @@ package main
 
 import "fmt"
 
+type bookmarkType = map[string]string
+ 
 func main () {
-	bookmarks := map[string]string{}
+	bookmarks := bookmarkType{}
 	var choice int8
-	for  {
-		showMenu()
-		fmt.Scan(&choice)
-		switch choice {
-		case 1:
-			fmt.Println("Текущие закладки:", bookmarks)
-		case 2:
-			addBookmarks(bookmarks)
-		case 3:
-			deleteBookmarks(bookmarks)
-		case 4: 
-			fmt.Println("Программа завершена")
-			return
-		default:
-			fmt.Println("Неверная команда")
+		for  {
+			showMenu()
+			fmt.Scan(&choice)
+			switch choice {
+			case 1:
+				fmt.Println("Текущие закладки:", bookmarks)
+			case 2:
+				addBookmarks(bookmarks)
+			case 3:
+				deleteBookmarks(bookmarks)
+			case 4: 
+				fmt.Println("Программа завершена")
+				return
+			default:
+				fmt.Println("Неверная команда")
+			}
 		}
-	}
 }
 
 func showMenu() {
@@ -34,9 +36,8 @@ func showMenu() {
 }
 
 
-func addBookmarks(bookmarks map[string]string) {
+func addBookmarks(bookmarks bookmarkType) {
 	var name, url string
-
 	fmt.Print("Введите название закладки: ")
 	fmt.Scan(&name)
 	fmt.Print("Введите URL: ")
@@ -48,8 +49,7 @@ func addBookmarks(bookmarks map[string]string) {
 	
 }
 
-
-func deleteBookmarks(bookmarks map[string]string)  {
+func deleteBookmarks(bookmarks bookmarkType)  {
 		var name string
 		fmt.Print("Для удаления введите название закладки: ")
 		fmt.Scan(&name)
