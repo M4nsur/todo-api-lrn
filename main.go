@@ -16,9 +16,10 @@ var mtx = sync.Mutex{}
 var ErrInsufficientFunds  = "Не хватает денег для проведения операции"
 const ErrMsgFailedToReadBody = "failed to read http body"
 func payHandler(w http.ResponseWriter, r *http.Request) {
-
 	httpReqBody, err := io.ReadAll(r.Body)
 		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+
 			errMsg := fmt.Sprintf("%s: %v", ErrMsgFailedToReadBody, err)
 			fmt.Println(errMsg)
 			w.Write([]byte(errMsg))
@@ -28,9 +29,11 @@ func payHandler(w http.ResponseWriter, r *http.Request) {
 	paymentAmount, err := strconv.Atoi(string(httpReqBody))
 
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		fmt.Println("failed convert str to int", err)
 		return 
 	}
+
 	mtx.Lock()
 	defer mtx.Unlock()
 	if money - paymentAmount >= 0  {
@@ -38,6 +41,7 @@ func payHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Оплата проведена, остаток на money:", money)
 		w.Write([]byte("Оплата проведена"))
 	}  else {
+		w.WriteHeader(http.StatusPaymentRequired)
 		fmt.Println(ErrInsufficientFunds)
 		w.Write([]byte(ErrInsufficientFunds))
 	}
@@ -66,6 +70,7 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("сумма на money:", money)
 		fmt.Println("сумма на bank:", bank)
 	} else {
+		w.WriteHeader(http.StatusPaymentRequired)
 		fmt.Println(ErrInsufficientFunds)
 	}
 	mtx.Unlock()
