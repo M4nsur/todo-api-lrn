@@ -13,8 +13,12 @@ func NewList() *List {
 }
 
 
-func (l *List) AddTask(task Task) {
+func (l *List) AddTask(task Task) error {
+	if _, ok := l.tasks[task.Title]; ok {
+		return ErrTaskAlreadyExists
+	}
 	l.tasks[task.Title] = task
+	return nil
 }
 
 func (l *List) ListTasks() map[string]Task {
