@@ -83,12 +83,9 @@ func main() {
 	http.HandleFunc("/save", saveHandler)
 
 	fmt.Println("сервер запушен")
-	err := http.ListenAndServe(":9091", nil)
+	
 
-	if err != nil {
-		fmt.Println("произошла ошибка при запуске сервера", err.Error())
-	} else {
-		fmt.Println("Не хватает денег, чтобы положить в копилку")
+	if err := http.ListenAndServe(":9091", nil); err != nil {
+		fmt.Println("ошибка при запуске сервера")
 	}
-
 }
