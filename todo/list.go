@@ -1,6 +1,8 @@
 package todo
 
-import "fmt"
+import (
+	"maps"
+)
 
 type List struct {
 	tasks map[string]Task
@@ -22,30 +24,46 @@ func (l *List) AddTask(task Task) error {
 }
 
 func (l *List) ListTasks() map[string]Task {
-	return l.tasks
+	tmp := make(map[string]Task, len(l.tasks))
+
+	maps.Copy(tmp, l.tasks)
+
+	return tmp
 }
 
-func (l *List) DoneTask(title string) {
+func (l *List) CompleteTask(title string) error {
 	task, ok := l.tasks[title]
 	if(!ok) {
-		fmt.Println(ErrTaskNotFound)
-
+		return ErrTaskNotFound
 	}
 
-	task.Done()
+	task.Complete()
 
 	l.tasks[title] = task
+	return nil
 }
 
 
-func (l *List) DeleteTask(title string) string {
+func (l *List) DeleteTask(title string) error {
 	_, ok := l.tasks[title]
 
 	if(!ok) {
-		fmt.Println(ErrTaskNotFound)
+		return ErrTaskNotFound
 	}
 
 	delete(l.tasks, title)
 
-	return ""
+	return nil
+}
+
+func (l *List) ListNotCompletedTasks () map[string]Task {
+	notCompleted := make(map[string]Task)
+
+	for k, v := range l.tasks {
+		if(!v.Completed) {
+			notCompleted[k] = v
+		}
+	}
+
+	return notCompleted
 }
