@@ -26,5 +26,6 @@ func (s *HTTPServer) StartServer() error {
 	router.Path("/tasks").Methods("GET").Queries("completed", "true").HandlerFunc(s.HTTPHandlers.HandleGetAllUncompletedTask)
 	router.Path("/tasks/{title}").Methods("PATCH").HandlerFunc(s.HTTPHandlers.HandleCompleteTask)
 	router.Path("/tasks/{title}").Methods("DELETE").HandlerFunc(s.HTTPHandlers.HandleDeleteTask)
-	http.HandleFunc()
+	
+	return http.ListenAndServe(":9091", router)
 }
